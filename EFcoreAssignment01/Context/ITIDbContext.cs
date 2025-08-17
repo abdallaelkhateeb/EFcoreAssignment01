@@ -18,7 +18,7 @@ namespace EFcoreAssignment01.Context
         public DbSet<Topic> Topics { get; set; }
         public DbSet<Stud_Course> StudCourses { get; set; }
         public DbSet<Course_Inst> CourseInsts { get; set; }
-
+        //jl
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=myServer;Database=myDB;User Id=myUser;Password=myPassword;TrustServerCertificate=True;");
