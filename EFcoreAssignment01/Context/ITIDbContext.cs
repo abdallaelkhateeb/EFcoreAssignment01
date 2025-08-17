@@ -27,15 +27,59 @@ namespace EFcoreAssignment01.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Department>().ToTable("Department");
-            modelBuilder.Entity<Department>().HasKey(d => d.ID);
-            modelBuilder.Entity<Department>().Property(d => d.Name).HasMaxLength(100).IsRequired();
+            // Student -> Department (many-to-one)
+            modelBuilder.Entity<Student>()
+                .HasOne<Department>()
+                .WithMany()
+                .HasForeignKey(s => s.Dep_Id);
 
+            // Instructor -> Department (many-to-one)
+            modelBuilder.Entity<Instructor>()
+                .HasOne<Department>()
+                .WithMany()
+                .HasForeignKey(i => i.Dept_ID);
+
+            // Department -> Manager (Instructor) (one-to-one)
+            modelBuilder.Entity<Department>()
+                .HasOne<Instructor>()
+                .WithMany()
+                .HasForeignKey(d => d.Ins_ID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Course -> Topic (many-to-one)
+            modelBuilder.Entity<Course>()
+                .HasOne<Topic>()
+                .WithMany()
+                .HasForeignKey(c => c.Top_ID);
+
+            // Stud_Course (many-to-many Student <-> Course)
+            modelBuilder.Entity<Stud_Course>()
+                .HasKey(sc => new { sc.stud_ID, sc.Course_ID });
 
             modelBuilder.Entity<Stud_Course>()
-           .HasKey(sc => new { sc.stud_ID, sc.Course_ID });
-            modelBuilder.Entity<Course_Inst>().ToTable("Course_Inst");
-            modelBuilder.Entity<Course_Inst>().HasKey(ci => new { ci.inst_ID, ci.Course_ID });
+                .HasOne<Student>()
+                .WithMany()
+                .HasForeignKey(sc => sc.stud_ID);
+
+            modelBuilder.Entity<Stud_Course>()
+                .HasOne<Course>()
+                .WithMany()
+                .HasForeignKey(sc => sc.Course_ID);
+
+            // Course_Inst (many-to-many Course <-> Instructor)
+            modelBuilder.Entity<Course_Inst>()
+                .HasKey(ci => new { ci.inst_ID, ci.Course_ID });
+
+            modelBuilder.Entity<Course_Inst>()
+                .HasOne<Instructor>()
+                .WithMany()
+                .HasForeignKey(ci => ci.inst_ID);
+
+            modelBuilder.Entity<Course_Inst>()
+                .HasOne<Course>()
+                .WithMany()
+                .HasForeignKey(ci => ci.Course_ID);
         }
     }
-}
+    }
+
